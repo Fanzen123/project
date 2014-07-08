@@ -1,0 +1,33 @@
+<div class="container">
+<header class="row">
+<div class="espaceClient">
+#if( $user )
+	<a href="#" onclick="deconnect()" ><img style="width:18px;" src="../../res/images/dec.png" /></a><br/>
+	Bienvenue sur School Manager <br/>
+	Login : $user.getLogin_user()
+	
+#else 
+	Veuillez saisir vos identifiants de connexion<br/>
+	<table>
+	<tr>
+		<td> Login </td> 
+		<td> <input type="text" id="username"  name="username" /> </td>
+	</tr>
+	<tr>
+		<td> Mot de passe </td>
+		<td> <input type="password" id="password" name="password" /> </td>
+	</tr>
+	</table>
+	<input type="submit" name="submit" value="Connexion" onclick="connect();"/>
+#end
+</div>
+
+<div id="sousBanniere">
+	<ul>
+		<li><a href="/myges/index/notification/">ABSENCE/RETARD</a></li>
+		<li><a href="/myges/index/resultat/">RESULTAT</a></li>
+		<li><a href="/myges/index/support/">SUPPORT DE COURS</a></li>
+		<li><a href="/myges/index/administration/">ADMINISTRATION</a></li>
+	</ul>
+</div>
+</header>

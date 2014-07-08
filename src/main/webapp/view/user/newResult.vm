@@ -1,0 +1,41 @@
+<style>
+	#contain {
+		margin : 5px;
+	}
+</style>
+<SCRIPT type="text/javascript">		
+	function create() {
+		document.forms["createResult"].submit();
+		window.close();
+	}
+</SCRIPT>
+
+<div id="container">
+	<div id="contain" >
+		<div id="contain" >
+			Matiere : $print.getDiciplineP()
+		</div>
+		<div id="contain" >
+			Professeur : $print.getTeacherP()
+		</div>
+		<div id="contain" >
+			Coefficient : $print.getCoefficientP()
+		</div>
+		<div id="contain" >
+		<form name="createResult" action="" method="post">
+			<input type="hidden" name="$NAME_ATTRIBUT_ACTION" value="createDataInDBB" />
+			<input type="hidden" name="$NAME_ATTRIBUT_IDDICIPLINE" value= $print.getDicipline() />
+			<input type="hidden" name="$NAME_ATTRIBUT_EXAM" value=$print.isExam() />
+			Note :
+			<select name="$NAME_ATTRIBUT_RESULT">
+			#foreach($n in $numbers)
+				<option value=$n> $n </option>
+			#end
+			</select>
+		</form>
+		</div>
+	
+		<button onclick="create();">Ajouter</button>
+			
+	</div>
+</div>

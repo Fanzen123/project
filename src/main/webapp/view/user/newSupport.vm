@@ -1,0 +1,23 @@
+<style>
+	#contain {
+		margin : 5px;
+	}
+</style>
+<SCRIPT type="text/javascript">		
+	function create() {
+		document.forms["$FORM_PARAM_NAME"].submit();
+		
+	}
+</SCRIPT>
+
+<div id="container">
+	<div id="contain" >
+		<div id="contain" >
+		<form name="$FORM_PARAM_NAME" action="" method="post" enctype="multipart/form-data">
+			Libelle <input type="text" name="$LIBELLE_PARAM_NAME" />
+			<input type="file" name="$FILE_PARAM_NAME" /> 
+			<button onclick="create();">Ajouter</button> 
+		</form>
+		</div>
+	</div>
+</div>

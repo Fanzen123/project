@@ -1,0 +1,103 @@
+<style>
+	#contain {
+		margin : 5px;
+	}
+</style>
+<SCRIPT type="text/javascript">		
+	function create() { 
+		var jour = document.getElementById("jour");
+		var mois = document.getElementById("mois");
+		var annee = document.getElementById("annee");
+		var heure = document.getElementById("heure");
+		var minute = document.getElementById("minute");
+		
+		var matiere = document.getElementById("listMatiere");
+		var type = document.getElementById("type");
+
+		var choice_jour = jour.options[jour.selectedIndex].value;
+		var choice_mois = mois.options[mois.selectedIndex].value;
+		var choice_annee = annee.options[annee.selectedIndex].value;
+		var choice_heure = heure.options[heure.selectedIndex].value;
+		var choice_minute = minute.options[minute.selectedIndex].value;
+		 
+		var date = choice_jour + '-' + choice_mois + '-' + choice_annee + ' ' +
+					choice_heure + ':' + choice_minute;
+					
+		var choice_matiere = matiere.options[matiere.selectedIndex].value;
+		var choice_type = type.options[type.selectedIndex].value;
+		
+		var justification = document.getElementById("justification").value;
+		
+		 $.ajax({
+		    url: "/myges/index/new",
+		    context: document.body,
+		    type : 'POST',
+			data : 'create=&type=' + choice_type
+			+ '&matiere=' + choice_matiere + '&date=' + date + 
+			'&justification=' + justification, 
+		    success: function(){
+		      $(this).addClass("done");
+		    }
+		});
+		
+		window.close();
+	}
+</SCRIPT>
+
+<div id="container">
+	<div id="contain" >
+		Date : 			
+		<select id="jour">
+		#foreach($j in $jours)
+			<option value=$j> $j </option>
+		#end
+		</select>
+		<select id="mois">
+		#foreach($m in $mois)
+			<option value=$m> $m </option>
+		#end
+		</select>
+		<select id="annee">
+		#foreach($a in $annees)
+			<option value=$a> $a </option>
+		#end
+		</select>
+		<select id="heure">
+		#foreach($h in $hours)
+			<option value=$h> $h </option>
+		#end
+		</select>
+		H 
+		<select id="minute">
+		#foreach($m in $minuts)
+			<option value=$m> $m </option>
+		#end
+		</select>
+	</div>
+	<div id="contain" >
+		Matiere :
+		<select id="listMatiere">
+		#foreach($m in $matieres)
+			<option  value=$m.id_dicipline> $m.libelle_dicipline </option>
+		#end
+		</select>		
+	</div>
+	
+	<div id="contain" >
+		Type : 
+		<select id="type">
+			<option value=0 $checked_absence>ABSENCE</option>
+			<option value=1 $checked_retard>RETARD</option>
+		</select>
+	</div>
+	
+	<div id="contain" >
+	
+	Justification : 
+	<input type="text" name="justification" id="justification" />
+	
+	</div>
+	
+	<button onclick="create();">Valider</button>
+
+</div>

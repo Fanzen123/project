@@ -1,0 +1,311 @@
+<div id="container">
+<div id="middleCorps">
+		<SCRIPT type="text/javascript">
+			#if($print_delete == 1)
+				alert('Nous vous confirmons la suppression.');
+			#end
+			#if($print_delete == 2)
+				alert('La suppression a echoué.');
+			#end
+			
+			function update(val1, val2, val3, val4, val5) {
+				switch(val1) {
+					// MODIFY DATE
+				    case 0:
+				       val4.style.display = 'none'; // WE HIDDEN LIBELLE MATIERE
+				       val4.parentNode.getElementsByTagName("span")[0].style.display = 'inline'; // WE RENDER CONSTANT MATIERES
+				       var newDate =  	val4.getElementsByTagName("select")[2].value + '-' + 
+				       					val4.getElementsByTagName("select")[1].value + '-' + 
+				       					val4.getElementsByTagName("select")[0].value + ' ' + 
+				       					val4.getElementsByTagName("select")[3].value + ':' + 
+				       					val4.getElementsByTagName("select")[4].value;
+				       $.ajax({
+							    url: "/myges/index/notification",
+							    context: document.body,
+							    type : 'POST',
+		       					data : 'id_to_update=' + val3 + '&type=' + val2
+		       					+ '&field=date&value=' + newDate, 
+							    success: function(){
+							      $(this).addClass("done");
+							    }
+						});
+				        break;
+					// MODIFY MATIERE
+				    case 1:
+				        val2.style.display = 'none'; // WE HIDDEN LIBELLE MATIERE
+				        val2.parentNode.getElementsByTagName("span")[1].style.display = 'inline'; // WE RENDER CONSTANT MATIERES
+				        break;
+				    	
+				    // MODIFY MOTIF
+				    case 2:
+				    	 var saisie = prompt("Saisissez  le motif :", val3);
+					     if(saisie != null) {
+						     $.ajax({
+								    url: "/myges/index/notification",
+								    context: document.body,
+								    type : 'POST',
+			       					data : 'id_to_update=' + val4 + '&type=' + val2
+			       					+ '&field=motif&value=' + saisie, 
+								    success: function(){
+								      $(this).addClass("done");
+								    }
+								});
+						}
+				    	break; 
+				    		
+				    // MODIFY MATIERE EXECUTED ONCHANGE !
+				    case 3:
+				        val5.style.display = 'none'; // WE HIDDEN LIBELLE MATIERE
+				        val5.parentNode.getElementsByTagName("span")[0].style.display = 'inline'; // WE RENDER CONSTANT MATIERES
+				        $.ajax({
+							    url: "/myges/index/notification",
+							    context: document.body,
+							    type : 'POST',
+		       					data : 'id_to_update=' + val4 + '&type=' + val2
+		       					+ '&field=matiere&value=' + val3, 
+							    success: function(){
+							      $(this).addClass("done");
+							    }
+						});
+				        break;  
+				        
+				    // PRINT FORM DATE
+				    case 4:
+				        val2.style.display = 'none'; // WE HIDDEN LIBELLE DATE
+				        val2.parentNode.getElementsByTagName("span")[1].style.display = 'inline'; // WE RENDER CONSTANT DATE
+				        break;
+				} 
+			}
+			
+		   	function confirmDelete(id, type) {
+		       if (confirm("Etes-vous sur de vouloir supprimer cette notification ?")) {
+					$.ajax({
+					    url: "/myges/index/notification",
+					    context: document.body,
+					    type : 'POST',
+       					data : 'id_to_delete=' + id + '&type=' + type,
+					    success: function(){
+					      $(this).addClass("done");
+					    }
+					});
+		       }
+		   	}
+			   	
+			function openWindow(id) {
+				window.open("/myges/index/new?new=" + id, "Admin", config='height=160, width=400, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no');
+				window.close();
+			}
+
+		</SCRIPT>
+
+		<div id="competence">
+			<div id="ligneAccueil">
+				<div id="presentation">
+				#if( $user)
+					<h3>Absence notifié : </h3>
+					<a href="#" onclick="openWindow(0);" ><img src="../../res/images/ajouter.gif" /></a><br /><br />
+					<table cellspacing="0" style="margin: auto;" class="table table-striped table-bordered table-hover">
+						<tr>
+							<th>Date</th>
+							<th>Matiere</th>
+							<th>Type</th>
+							<th>Justifie</th>
+							<th>Motif</th>
+							<th>Action</th>
+						</tr>
+						#foreach($item in $absences)
+						<tr>
+							<td>		
+								<span name="libelle">
+									$item.getDate()
+									#if($u.isEleve())
+										<a href="#" onclick="update(4, this.parentNode)"><img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /></a>
+									#end
+								</span>
+								<span name="choices" style="display: none;">
+									<select name="jour">
+									#foreach($j in $jours)
+										<option value=$j> $j </option>
+									#end
+									</select>
+									
+									<select name="mois">
+									#foreach($m in $mois)
+										<option value=$m> $m </option>
+									#end
+									</select>
+									
+									<select name="annee">
+									#foreach($a in $annees)
+										<option value=$a> $a </option>
+									#end
+									</select>
+									<br/>
+									<select name="heure">
+									#foreach($h in $hours)
+										<option value=$h> $h </option>
+									#end
+									</select>
+									H
+									<select name="minute">
+									#foreach($m in $minuts)
+										<option value=$m> $m </option>
+									#end
+									</select>
+									
+									<button onClick="update(0, 'absence', '$item.getId()', this.parentNode);">Valider</button>
+								</span>
+							</td>
+							<td>
+								<span name="libelle">
+									$item.getDicipline()
+									#if($u.isEleve())
+									<a href="#" onclick="update(1, this.parentNode);">
+										<img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /> 
+									</a>
+									#end
+								</span>
+								<span name="choices" style="display: none;">
+									<select name="listMatiere" onChange="update(3, 'absence', this.value, '$item.getId()',this.parentNode);">
+									#foreach($m in $matieres)
+										<option  value=$m.id_dicipline> $m.libelle_dicipline </option>
+									#end
+									</select>
+								</span>
+							</td>
+							<td>
+								$item.getType()
+							</td>
+							<td>
+								$item.isJustifie()
+							</td>
+							<td>
+								$item.getJustification()
+								#if($u.isEleve())
+								<a href="#" onclick="update(2, 'absence', '$item.getJustification()', '$item.getId()');">
+									<img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /> 
+								</a>
+								#end
+							</td>
+							#if($u.isEleve())
+								<td><a href="#" onclick="confirmDelete('$item.getId()', 'absence');"><img style="width:17px;vertical-align:middle;" src='../../res/images/sup.png' /> </a></td>
+							#end
+						</tr>
+						#end
+						#if($numberOfAbsence < 1)
+						<tr>
+							<td colspan="5"> Aucune absence notifié</td>
+						</tr>
+						#end
+					</table>
+					<br />
+					Absences non justifiées : $countNotJustifiedAbsence
+					
+					<h3>Retard notifié : </h3>
+					
+					<a href="#" onclick="openWindow(1);" ><img src="../../res/images/ajouter.gif" /></a><br /><br />
+					<table cellspacing="0" style="margin: auto;" class="table table-striped table-bordered table-hover">
+						<tr>
+							<th>Date</th>
+							<th>Matiere</th>
+							<th>Type</th>
+							<th>Justifie</th>
+							<th>Motif</th>
+							<th>Action</th>
+						</tr>
+						#foreach($item in $retards)
+						<tr>
+							<td>		
+								<span name="libelle">
+									$item.getDate()
+									#if($u.isEleve())
+										<a href="#" onclick="update(4, this.parentNode)"><img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /></a>
+									#end
+								</span>
+								<span name="choices" style="display: none;">
+									<select name="jour">
+									#foreach($j in $jours)
+										<option value=$j> $j </option>
+									#end
+									</select>
+									
+									<select name="mois">
+									#foreach($m in $mois)
+										<option value=$m> $m </option>
+									#end
+									</select>
+									
+									<select name="annee">
+									#foreach($a in $annees)
+										<option value=$a> $a </option>
+									#end
+									</select>
+									<br/>
+									<select name="heure">
+									#foreach($h in $hours)
+										<option value=$h> $h </option>
+									#end
+									</select>
+									H
+									<select name="minute">
+									#foreach($m in $minuts)
+										<option value=$m> $m </option>
+									#end
+									</select>
+									
+									<button onClick="update(0, 'retard', '$item.getId()', this.parentNode);">Valider</button>
+								</span>
+							</td>
+							<td>
+								<span name="libelle">
+									$item.getDicipline()
+									#if($u.isEleve())
+									<a href="#" onclick="update(1, this.parentNode);">
+										<img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /> 
+									</a>
+									#end
+								</span>
+								<span name="choices" style="display: none;">
+									<select name="listMatiere" onChange="update(3, 'retard', this.value, '$item.getId()',this.parentNode);">
+									#foreach($m in $matieres)
+										<option  value=$m.id_dicipline> $m.libelle_dicipline </option>
+									#end
+									</select>
+								</span>
+							</td>
+							<td>
+								$item.getType()
+							</td>
+							<td>
+								$item.isJustifie()
+							</td>
+							<td>
+								$item.getJustification()
+								#if($u.isEleve())
+								<a href="#" onclick="update(2, 'retard', '$item.getJustification()', '$item.getId()');">
+									<img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /> 
+								</a>
+								#end
+							</td>
+							#if($u.isEleve())
+								<td><a href="#" onclick="confirmDelete('$item.getId()', 'retard');"><img style="width:17px;vertical-align:middle;" src='../../res/images/sup.png' /> </a></td>
+							#end
+						</tr>
+						#end
+						#if($numberOfRetard < 1)
+						<tr>
+							<td colspan="5"> Aucun retard notifié</td>
+						</tr>
+						#end
+					</table>
+					<br />
+					Retards non justifiées : $countNotJustifiedRetard
+				#else 
+					<h3>Mes notifications : </h3>
+					<span class="info">Veuillez vous connectez pour acceder a vos notifications d'absence ou  de retard</span>
+				#end
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

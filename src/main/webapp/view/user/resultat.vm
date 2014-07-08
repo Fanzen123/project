@@ -1,0 +1,135 @@
+<div id="container">
+
+<div id="middleCorps">
+		
+		<SCRIPT type="text/javascript">
+			
+			function update(isExam, id, number, div) {
+		        $.ajax({
+					    url: "/myges/index/resultat",
+					    context: document.body,
+					    type : 'POST',
+       					data : '$NAME_ATTRIBUT_ACTION' + '=' + '$NAME_ACTION_UPDATE' + '&' + '$NAME_ATTRIBUT_IDDICIPLINE' + '=' + id
+	       					 + '&' + '$NAME_ATTRIBUT_EXAM' + '=' + isExam + '&' + '$NAME_ATTRIBUT_RESULT' + '=' + number,
+					    success: function(){
+					      $(this).addClass("done");
+					    }
+					});
+				
+				div.style.display = 'none'; //WE HIDDEN SELECT CHOICES 
+			 	div.parentNode.getElementsByTagName("span")[1].style.display = 'inline'; // WE RENDER LIBELLE
+				        
+			}
+			
+			function delete_result(isExam, id) {
+				if (confirm("Etes-vous sur de vouloir supprimer cette note ?")) {
+		        $.ajax({
+					    url: "/myges/index/resultat",
+					    context: document.body,
+					    type : 'POST',
+       					data : '$NAME_ATTRIBUT_ACTION' + '=' + '$NAME_ACTION_DELETE' + '&' + '$NAME_ATTRIBUT_IDDICIPLINE' + '=' + id
+	       					 + '&' + '$NAME_ATTRIBUT_EXAM' + '=' + isExam,
+					    success: function(){
+					      $(this).addClass("done");
+					    }
+					});
+				}
+			}
+			
+			function print_select(div) {
+		        div.style.display = 'none'; // WE HIDDEN LIBELLE
+		        div.parentNode.getElementsByTagName("span")[0].style.display = 'inline'; // WE RENDER CONSTANT NUMBERS
+			}
+			
+			function add(isExam, id_dicipline) {
+				window.open('/myges/index/new_result?' + '$NAME_ATTRIBUT_ACTION' + '=' + '$NAME_ACTION_FORM' + '&' + '$NAME_ATTRIBUT_IDDICIPLINE' + '=' + id_dicipline
+	       					 + '&' + '$NAME_ATTRIBUT_EXAM' + '=' + isExam, 'Ajouter un resultat', config='height=160, width=400, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no');
+			}
+			
+		</SCRIPT>
+
+		<div id="competence">
+			<div id="ligneAccueil">
+				<div id="presentation">
+				<h3>Vos resultats scolaire : </h3>
+				#if( $user)
+					<table cellspacing="0" style="margin: auto;" class="table table-striped table-bordered table-hover">
+						<tr>
+							<th>Matiere</th>
+							<th>Intervenant</th>
+							<th>Coef</th>
+							<th>CC</th>
+							<th>Partiel</th>
+						</tr>
+						#foreach($item in $list_)
+						<tr>
+							<td>
+								<span name="libelle">
+									$item.getDicipline()
+								</span>
+							</td>
+							<td>
+								$item.getTeacher()
+							</td>
+							<td>
+								$item.getCoef()
+							</td>
+							<td>
+								#if($user.isEleve())
+									<span name="choices" style="display: none;">
+										<select name="number" onChange="update(false, $item.getId(), this.value, this.parentNode);">
+										#foreach($i in $numbers)
+											<option> $i </option>
+										#end
+										</select>
+									</span>
+									<span name="libelle">
+									#if($item.getCc())
+										<a href="#" onclick="print_select(this.parentNode);"><img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /></a>
+										$item.getCc()
+										<a href="#" onclick="delete_result(false, $item.getId());"><img style="width:17px;vertical-align:middle;" src='../../res/images/sup.png' /></a>
+									#else
+										<a href="#" onclick="add(false, $item.getId());" ><img style="width:17px;vertical-align:middle;" src="../../res/images/ajouter.gif" /></a>
+									#end
+									</span>
+									
+								#else
+									$item.getCc()
+								#end
+							</td>
+							<td>
+								#if($user.isEleve())
+									<span name="choices" style="display: none;">
+										<select name="number" onChange="update(true, $item.getId(), this.value, this.parentNode);">
+										#foreach($i in $numbers)
+											<option> $i </option>
+										#end
+										</select>
+									</span>
+									<span name="libelle">
+									#if($item.getExam())
+										<a href="#" onclick="print_select(this.parentNode);"><img style="width:17px;vertical-align:middle;" src='../../res/images/box.png' /></a>
+										$item.getExam()
+										<a href="#" onclick="delete_result(true, $item.getId());"><img style="width:17px;vertical-align:middle;" src='../../res/images/sup.png' /></a>
+									#else
+										<a href="#" onclick="add(true, $item.getId(), this.parentNode);" ><img style="width:17px;vertical-align:middle;" src="../../res/images/ajouter.gif" /></a>
+									#end
+									</span>
+								#else
+									$item.getExam()
+								#end
+							</td>
+						</tr>
+						#end
+						
+					</table>
+					
+				#else 
+					<span class="info">Veuillez vous connectez pour acceder a vos resultats.</span>
+				#end
+				
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
